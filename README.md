@@ -17,22 +17,44 @@ BEAM process per connection.
 
 | Crate | Purpose | Status |
 |---|---|---|
-| `m4h-ring` | Lock-free SPSC rings with 64-byte, cache-line-aligned slots | in progress |
-| `m4h-platform` | The `Platform` trait and its Linux backend | in progress |
+| `m4h` | Umbrella crate | 0.0.1 |
+| `m4h-ring` | Lock-free SPSC rings with 64-byte, cache-line-aligned slots | usable, verified with loom and Miri |
+| `m4h-platform` | The `Platform` trait and its Linux backend | first draft |
+| `m4h-bench` | Ring throughput and latency benchmarks | usable |
 | `m4h-kernel` | The multikernel | placeholder |
 | `m4h-beam` | The BEAM-compatible VM | placeholder |
 | `m4h-net` | The shared network stack | placeholder |
 | `m4h-lb` | The load balancer | placeholder |
-| `m4h-bench` | Benchmarks | placeholder |
 
-## Building
+## Building and testing
 
 ```sh
 cargo build --workspace
 cargo test --workspace
+
+# model checking of the ring protocol
+RUSTFLAGS="--cfg loom" cargo test -p m4h-ring --test loom --release
+
+# undefined-behaviour checks (nightly)
+cargo +nightly miri test -p m4h-ring
 ```
 
-The toolchain is pinned in `rust-toolchain.toml`.
+The toolchain is pinned in `rust-toolchain.toml`; the minimum supported Rust
+version is 1.85, checked in CI. The memory-ordering argument of the ring is in
+the [`m4h-ring` documentation](crates/m4h-ring/src/lib.rs).
+
+## Benchmarks
+
+```sh
+cargo run --release -p m4h-bench -- topology
+cargo run --release -p m4h-bench -- suite
+cargo run --release -p m4h-bench -- throughput --cores 0,8 --impl m4h,m4h-batch,rtrb
+cargo run --release -p m4h-bench -- latency --cores 0,8
+```
+
+`suite` reads the topology and runs every implementation on SMT siblings, on
+two cores of the same NUMA node, and on two cores of different NUMA nodes.
+`rtrb` and crossbeam's `ArrayQueue` are included as baselines.
 
 ## License
 

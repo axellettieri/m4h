@@ -11,6 +11,10 @@ authors.workspace = true
 publish = false
 
 [dependencies]
+crossbeam-queue = "0.3.14"
+m4h-platform = { version = "0.0.0", path = "../m4h-platform" }
+m4h-ring = { version = "0.0.0", path = "../m4h-ring" }
+rtrb = "0.4.0"
 
 [lints]
 workspace = true
