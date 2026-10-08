@@ -317,6 +317,22 @@ impl<const N: usize> Ring<N> {
         &self.slots[(index & Self::MASK) as usize]
     }
 
+    /// Raw pointer to the slot of index `index`, with provenance over the
+    /// whole slot array, for the in-place slice APIs.
+    ///
+    /// The pointer must be derived from the array, not from a reference to a
+    /// single cell: a slice built from `&slots[i]` would only be allowed to
+    /// touch that one slot (Stacked Borrows), even though the memory is there.
+    #[cfg(not(loom))]
+    #[inline(always)]
+    fn slot_ptr(&self, index: u32) -> *mut Slot {
+        let base = self.slots.as_ptr().cast::<Slot>().cast_mut();
+        // SAFETY: the masked index is in bounds of the array. `Cell<Slot>` is
+        // `repr(transparent)` over `UnsafeCell<Slot>`, so the cast is
+        // layout-correct and writes through it are allowed.
+        unsafe { base.add((index & Self::MASK) as usize) }
+    }
+
     /// Test hook: overwrites both published indices.
     #[cfg(all(test, not(loom)))]
     pub(crate) fn set_indices(&self, tail: u32, head: u32) {
@@ -492,7 +508,7 @@ impl<const N: usize> Producer<'_, N, Trusted> {
         let start = self.tail & Ring::<N>::MASK;
         let len = free.min(Ring::<N>::CAP - start);
         self.reserved = len;
-        let first = self.ring().cell(start).get();
+        let first = self.ring().slot_ptr(start);
         // SAFETY: slots `start..start + len` are within the array (no wrap),
         // are free (the consumer does not access them until we publish), and
         // `Cell<Slot>` is `repr(transparent)` over `UnsafeCell<Slot>`, so the
@@ -678,7 +694,7 @@ impl<const N: usize> Consumer<'_, N, Trusted> {
         let start = self.head & Ring::<N>::MASK;
         let len = filled.min(Ring::<N>::CAP - start);
         self.peeked = len;
-        let first = self.ring().cell(start).get().cast_const();
+        let first = self.ring().slot_ptr(start).cast_const();
         // SAFETY: slots `start..start + len` are in bounds (no wrap), were
         // published by the trusted producer and are not written until we
         // release them; the layout argument is the same as in `reserve`.

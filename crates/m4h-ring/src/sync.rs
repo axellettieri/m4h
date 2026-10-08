@@ -36,13 +36,6 @@ impl<T> Cell<T> {
     pub(crate) fn with_mut<R>(&self, f: impl FnOnce(*mut T) -> R) -> R {
         f(self.0.get())
     }
-
-    /// Raw pointer to the contents. Only used by the in-place (slice) APIs,
-    /// which do not exist under loom.
-    #[inline(always)]
-    pub(crate) const fn get(&self) -> *mut T {
-        self.0.get()
-    }
 }
 
 #[cfg(loom)]
