@@ -1,0 +1,17 @@
+[package]
+name = "m4h-ring"
+description = "Lock-free SPSC rings with cache-line-sized slots, the core IPC primitive of M4H"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+keywords = ["spsc", "lock-free", "ring-buffer", "no-std", "multikernel"]
+categories = ["concurrency", "no-std", "data-structures"]
+
+[dependencies]
+
+[lints]
+workspace = true

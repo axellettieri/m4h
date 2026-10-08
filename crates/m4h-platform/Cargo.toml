@@ -1,0 +1,17 @@
+[package]
+name = "m4h-platform"
+description = "The Platform trait: everything M4H applications ask of the system, with a Linux backend"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+keywords = ["platform", "multikernel", "no-std", "numa"]
+categories = ["os", "no-std"]
+
+[dependencies]
+
+[lints]
+workspace = true

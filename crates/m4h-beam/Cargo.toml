@@ -1,0 +1,16 @@
+[package]
+name = "m4h-beam"
+description = "A BEAM-compatible virtual machine in Rust (ERTS rewritten, standard .beam files unchanged)"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+publish = false
+
+[dependencies]
+
+[lints]
+workspace = true
