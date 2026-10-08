@@ -20,6 +20,7 @@ m4h-net = { path = "crates/m4h-net" }
 unsafe_op_in_unsafe_fn = "deny"
 missing_docs = "warn"
 unreachable_pub = "warn"
+unexpected_cfgs = { level = "warn", check-cfg = ["cfg(loom)", "cfg(m4h_ring_broken_release)"] }
 
 [workspace.lints.clippy]
 all = { level = "warn", priority = -1 }

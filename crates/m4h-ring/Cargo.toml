@@ -13,5 +13,11 @@ categories = ["concurrency", "no-std", "data-structures"]
 
 [dependencies]
 
+[target.'cfg(loom)'.dependencies]
+loom = "0.7"
+
+[target.'cfg(loom)'.dev-dependencies]
+loom = "0.7"
+
 [lints]
 workspace = true
