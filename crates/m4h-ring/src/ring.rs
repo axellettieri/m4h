@@ -357,6 +357,13 @@ impl<const N: usize> Ring<N> {
 /// is the only writer) and a cached copy of the consumer's head, re-read only
 /// when the cached value says the ring is full: in steady state the producer
 /// never touches the consumer's cache line.
+///
+/// The handle is aligned to [`INDEX_ALIGN`](crate::INDEX_ALIGN): its private
+/// state is written on every push, so it must never share a cache line (pair)
+/// with the consumer handle, wherever the two handles end up in memory (for
+/// example in two adjacent heap allocations of thread closures).
+#[cfg_attr(target_arch = "x86_64", repr(align(128)))]
+#[cfg_attr(not(target_arch = "x86_64"), repr(align(64)))]
 pub struct Producer<'r, const N: usize, M: Mode = Trusted> {
     ring: NonNull<Ring<N>>,
     tail: u32,
@@ -544,7 +551,9 @@ impl<const N: usize> Producer<'_, N, Trusted> {
 ///
 /// Mirror image of [`Producer`]: a private copy of the head, a cached copy of
 /// the producer's tail re-read only when the cached value says the ring is
-/// empty.
+/// empty. Aligned like [`Producer`], for the same reason.
+#[cfg_attr(target_arch = "x86_64", repr(align(128)))]
+#[cfg_attr(not(target_arch = "x86_64"), repr(align(64)))]
 pub struct Consumer<'r, const N: usize, M: Mode = Trusted> {
     ring: NonNull<Ring<N>>,
     head: u32,
