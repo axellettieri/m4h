@@ -11,7 +11,17 @@ authors.workspace = true
 keywords = ["platform", "multikernel", "no-std", "numa"]
 categories = ["os", "no-std"]
 
+[features]
+default = ["linux"]
+## Linux hosted backend. Only takes effect when compiling for Linux; on other
+## targets (e.g. x86_64-unknown-none) the crate stays no_std and dependency-free.
+linux = ["dep:libc"]
+
 [dependencies]
+m4h-ring = { workspace = true }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+libc = { version = "0.2", optional = true }
 
 [lints]
 workspace = true

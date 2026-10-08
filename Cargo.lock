@@ -106,6 +106,10 @@ version = "0.0.0"
 [[package]]
 name = "m4h-platform"
 version = "0.0.0"
+dependencies = [
+ "libc",
+ "m4h-ring",
+]
 
 [[package]]
 name = "m4h-ring"
