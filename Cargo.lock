@@ -3,6 +3,10 @@
 version = 4
 
 [[package]]
+name = "m4h"
+version = "0.0.1"
+
+[[package]]
 name = "m4h-beam"
 version = "0.0.0"
 

@@ -1,0 +1,18 @@
+[package]
+name = "m4h"
+description = "M4H (Multi4Hyper): a Rust multikernel for hyper-scale BEAM workloads. Ad astra per aspera."
+version = "0.0.1"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+homepage.workspace = true
+authors.workspace = true
+readme = "README.md"
+keywords = ["multikernel", "kernel", "beam", "erlang", "no-std"]
+categories = ["os", "no-std", "concurrency"]
+
+[dependencies]
+
+[lints]
+workspace = true
